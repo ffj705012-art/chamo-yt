@@ -1,0 +1,114 @@
+from pathlib import Path
+
+path = Path("/mnt/data/chamo_yt_panel_multicolor.html")
+html = path.read_text(encoding="utf-8")
+
+# Add a richer control center after the existing modes block.
+anchor = '''<div class="modes">
+<button onclick="rainbow()">🌈 MULTICOLOR</button>
+<button onclick="matrix()">☣️ MATRIX</button>
+<button onclick="neonPulse()">💥 NEON PULSE</button>
+</div>'''
+extra = '''<div class="section-title">ULTRA CONTROL CENTER</div>
+<div class="tools">
+<button onclick="particleBurst()">💥 BURST</button>
+<button onclick="scanFlash()">📡 SCAN FLASH</button>
+<button onclick="holo()">🔮 HOLOGRAM</button>
+<button onclick="starsMode()">🌟 STARFIELD</button>
+<button onclick="glassMode()">💎 GLASS</button>
+<button onclick="cinema()">🎬 CINEMA</button>
+</div>
+<div class="mini-stats">
+  <div><b id="fps">60</b><span>FPS</span></div>
+  <div><b id="energy">100%</b><span>ENERGY</span></div>
+  <div><b id="mode">GOD</b><span>MODE</span></div>
+  <div><b id="clock">00:00</b><span>TIME</span></div>
+</div>'''
+if anchor not in html:
+    raise RuntimeError("No se encontró el bloque de modos.")
+html = html.replace(anchor, anchor + extra)
+
+# Add CSS for the new controls.
+css_anchor = '''.quote{margin-top:16px;padding:14px;text-align:center;border:1px solid #ffffff0d;border-radius:14px;color:#7d8d89;font-size:10px;letter-spacing:1px}'''
+css_extra = '''.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tools button{font-size:9px;padding:10px 4px}
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
+.mini-stats div{padding:8px 3px;text-align:center;border:1px solid #ffffff0d;border-radius:11px;background:#ffffff03}
+.mini-stats b{display:block;color:var(--accent);font-size:13px}
+.mini-stats span{font-size:7px;color:#647570;letter-spacing:1px}
+.burst{position:fixed;width:5px;height:5px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:7;box-shadow:0 0 15px var(--accent)}
+'''
+if css_anchor not in html:
+    raise RuntimeError("No se encontró el bloque CSS esperado.")
+html = html.replace(css_anchor, css_anchor + css_extra)
+
+# Add JS functionality before resetAll.
+js_anchor = '''function resetAll(){'''
+js_extra = r'''function particleBurst(){
+  for(let i=0;i<55;i++){
+    const p=document.createElement("div"); p.className="burst";
+    p.style.left="50%"; p.style.top="50%"; document.body.appendChild(p);
+    const a=Math.random()*Math.PI*2, d=60+Math.random()*260;
+    p.animate([{transform:"translate(-50%,-50%) scale(1)",opacity:1},
+               {transform:`translate(calc(-50% + ${Math.cos(a)*d}px),calc(-50% + ${Math.sin(a)*d}px)) scale(0)`,opacity:0}],
+              {duration:700+Math.random()*500,easing:"cubic-bezier(.2,.8,.2,1)"});
+    setTimeout(()=>p.remove(),1300);
+  }
+  pop("💥 PARTICLE BURST ACTIVADO");
+}
+function scanFlash(){
+  const old=scan.style.display; scan.style.display="block";
+  scan.animate([{opacity:.1},{opacity:1},{opacity:.1}],{duration:650});
+  setTimeout(()=>{if(features.scan===false)scan.style.display="none";else scan.style.display=old||"block"},700);
+  pop("📡 SCAN FLASH");
+}
+function holo(){
+  panel.animate([{transform:"perspective(900px) rotateX(0) rotateY(0)"},
+                 {transform:"perspective(900px) rotateX(2deg) rotateY(-2deg)"},
+                 {transform:"perspective(900px) rotateX(-2deg) rotateY(2deg)"},
+                 {transform:"perspective(900px) rotateX(0) rotateY(0)"}],
+                {duration:900,easing:"ease-in-out"});
+  pop("🔮 HOLOGRAM MODE");
+}
+function starsMode(){
+  features.particles=true; features.comets=true;
+  document.querySelectorAll(".toggle").forEach(t=>{
+    if(t.dataset.f==="particles"||t.dataset.f==="comets") t.classList.add("on");
+  });
+  pop("🌟 STARFIELD MAX");
+}
+function glassMode(){
+  panel.style.background="rgba(255,255,255,.045)";
+  panel.style.backdropFilter="blur(30px) saturate(1.6)";
+  panel.style.borderColor="rgba(255,255,255,.28)";
+  pop("💎 GLASS MODE");
+}
+function cinema(){
+  document.body.animate([{filter:"brightness(1)"},{filter:"brightness(.48)"},{filter:"brightness(.72)"}],
+                        {duration:500,fill:"forwards"});
+  pop("🎬 CINEMA MODE");
+}
+setInterval(()=>{
+  document.getElementById("clock").textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  document.getElementById("energy").textContent=Math.floor(88+Math.random()*13)+"%";
+},1000);
+'''
+if js_anchor not in html:
+    raise RuntimeError("No se encontró resetAll.")
+html = html.replace(js_anchor, js_extra + js_anchor)
+
+# Reset the added visual modes too.
+html = html.replace(
+'''function resetAll(){clearInterval(rainbowTimer);clearInterval(matrixTimer);rainbowTimer=null;matrixTimer=null;''',
+'''function resetAll(){clearInterval(rainbowTimer);clearInterval(matrixTimer);rainbowTimer=null;matrixTimer=null;document.body.style.filter="none";panel.style.transform="none";panel.style.background="#02070bdc";panel.style.backdropFilter="blur(20px)";'''
+)
+
+# Responsive tweaks for the new grid.
+html = html.replace(
+'''@media(max-width:560px){.side{width:58px;''',
+'''@media(max-width:560px){.tools{grid-template-columns:repeat(2,1fr)}.mini-stats{grid-template-columns:repeat(2,1fr)}.side{width:58px;'''
+)
+
+out = Path("/mnt/data/chamo_yt_ultimate_god_panel.html")
+out.write_text(html, encoding="utf-8")
+print(out)
