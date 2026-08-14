@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHAMO YT — GOD PANEL</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Arial,Helvetica,sans-serif;background:#010307;color:#fff;--accent:#00ffb3;--accent2:#8fffea}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#fx{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 40%,var(--accent)1c,transparent 25%),linear-gradient(120deg,#0000,#00aaff0b,#0000);animation:aura 6s ease-in-out infinite}
+.app{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:12px}
+.panel{width:min(96vw,650px);height:min(94vh,730px);display:flex;overflow:hidden;border:1px solid var(--accent)4d;border-radius:28px;background:#02070bdc;backdrop-filter:blur(20px);box-shadow:0 0 50px var(--accent)1c,0 0 130px #0077ff0d}
+.side{width:155px;padding:18px 10px;border-right:1px solid #ffffff0d;background:#ffffff03;display:flex;flex-direction:column;gap:8px}
+.brand{font-size:15px;font-weight:900;letter-spacing:2px;text-align:center;color:#8affdf;margin:5px 0 22px}
+.nav{padding:12px 9px;border:1px solid transparent;border-radius:12px;color:#71837e;font-size:11px;text-align:left;cursor:pointer;transition:.2s}
+.nav.active,.nav:hover{color:#fff;background:var(--accent)10;border-color:var(--accent)33}
+.nav b{color:var(--accent);margin-right:6px}
+.side small{margin-top:auto;color:#465954;text-align:center;font-size:8px;letter-spacing:1px}
+.main{flex:1;padding:25px 20px;overflow:auto}
+.top{display:flex;justify-content:space-between;align-items:center}
+.status{font-size:9px;color:#667873;letter-spacing:1.5px}.status i{color:var(--accent);font-style:normal}
+.hero{text-align:center;padding:22px 0 14px}
+.crown{font-size:42px;filter:drop-shadow(0 0 18px var(--accent)66);animation:pulse 2s infinite}
+h1{font-size:clamp(42px,11vw,76px);margin:6px 0;letter-spacing:5px;background:linear-gradient(90deg,#fff,var(--accent),var(--accent2),#fff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3s linear infinite}
+.hero p{margin:0;color:#80918d;font-size:10px;letter-spacing:2px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}
+.metric{padding:13px 5px;text-align:center;border:1px solid #ffffff0d;border-radius:14px;background:#ffffff04}.metric strong{display:block;color:var(--accent);font-size:19px}.metric span{font-size:8px;color:#667873}
+.section-title{font-size:10px;color:#82938e;letter-spacing:2px;margin:18px 0 9px}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{display:flex;align-items:center;justify-content:space-between;padding:11px;border:1px solid #ffffff0d;border-radius:13px;background:#ffffff03}
+.item span{font-size:10px;color:#b6c4c0}.toggle{width:39px;height:21px;background:#26312f;border-radius:20px;padding:2px;cursor:pointer}.toggle i{display:block;width:17px;height:17px;border-radius:50%;background:#75817e;transition:.25s}.toggle.on{background:#00a97d;box-shadow:0 0 13px var(--accent)3d}.toggle.on i{transform:translateX(18px);background:#fff}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+button{padding:12px;border-radius:13px;border:1px solid var(--accent)4d;background:var(--accent)09;color:#fff;font-weight:800;font-size:10px;cursor:pointer;transition:.2s}button:hover{transform:translateY(-2px);box-shadow:0 0 22px var(--accent)2b}
+.god{grid-column:1/-1;background:linear-gradient(90deg,var(--accent)14,#0077ff14);border-color:var(--accent)66}
+.quote{margin-top:16px;padding:14px;text-align:center;border:1px solid #ffffff0d;border-radius:14px;color:#7d8d89;font-size:10px;letter-spacing:1px}.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tools button{font-size:9px;padding:10px 4px}
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
+.mini-stats div{padding:8px 3px;text-align:center;border:1px solid #ffffff0d;border-radius:11px;background:#ffffff03}
+.mini-stats b{display:block;color:var(--accent);font-size:13px}
+.mini-stats span{font-size:7px;color:#647570;letter-spacing:1px}
+.burst{position:fixed;width:5px;height:5px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:7;box-shadow:0 0 15px var(--accent)}
+.colors{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.colorBtn{width:42px;height:36px;padding:0;border-radius:11px;border:1px solid #ffffff16;background:#ffffff05;font-size:18px;cursor:pointer;transition:.2s}
+.colorBtn:hover,.colorBtn.active{transform:translateY(-2px);border-color:var(--accent)66;box-shadow:0 0 18px var(--accent)22}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.modes button{font-size:9px;padding:10px 5px}
+
+.quote b{color:var(--accent)}
+.toast{position:fixed;z-index:9;bottom:22px;left:50%;transform:translate(-50%,30px);opacity:0;background:#03100deF;border:1px solid var(--accent)55;padding:11px 16px;border-radius:13px;color:#baffed;font-size:10px;transition:.3s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes shine{to{background-position:300%}}@keyframes pulse{50%{transform:scale(1.08)}}@keyframes aura{50%{opacity:.65}}
+@media(max-width:560px){.tools{grid-template-columns:repeat(2,1fr)}.mini-stats{grid-template-columns:repeat(2,1fr)}.side{width:58px;padding:12px 6px}.brand{font-size:0}.brand:after{content:"亗";font-size:22px}.nav{font-size:0;text-align:center}.nav b{font-size:16px;margin:0}.side small{display:none}.main{padding:20px 12px}.features{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.metrics{gap:5px}.metric{padding:10px 2px}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas><div id="fx"></div>
+<div class="app"><section class="panel">
+<aside class="side">
+<div class="brand">CHAMO YT</div>
+<div class="nav active"><b>⌂</b> INICIO</div>
+<div class="nav"><b>⚡</b> EFECTOS</div>
+<div class="nav"><b>👑</b> GOD</div>
+<div class="nav"><b>🎮</b> GAMING</div>
+<div class="nav"><b>☣</b> AURA</div>
+<small>CHAMO CORE<br>ONLINE</small>
+</aside>
+<main class="main">
+<div class="top"><span class="status">SYSTEM <i>● ONLINE</i></span><span class="status">V 2.0</span></div>
+<div class="hero"><div class="crown">👑</div><h1>CHAMO YT</h1><p>⚡ OFFICIAL GOD PANEL • FREE FIRE • GAMING ⚡</p></div>
+<div class="metrics"><div class="metric"><strong>∞</strong><span>ESTILO</span></div><div class="metric"><strong>GOD</strong><span>MODE</span></div><div class="metric"><strong>亗</strong><span>LEGADO</span></div></div>
+
+<div class="section-title">CONTROL CENTER</div>
+<div class="features">
+<div class="item"><span>✨ PARTÍCULAS</span><div class="toggle on" data-f="particles"><i></i></div></div>
+<div class="item"><span>📺 SCANLINES</span><div class="toggle on" data-f="scan"><i></i></div></div>
+<div class="item"><span>🌌 AURA NEÓN</span><div class="toggle on" data-f="aura"><i></i></div></div>
+<div class="item"><span>💫 BRILLO</span><div class="toggle on" data-f="glow"><i></i></div></div>
+<div class="item"><span>🌀 MODO DARK</span><div class="toggle" data-f="dark"><i></i></div></div>
+<div class="item"><span>🌠 COMETAS</span><div class="toggle on" data-f="comets"><i></i></div></div>
+</div>
+
+<div class="section-title">COLOR LAB • AURA SYSTEM</div>
+<div class="colors">
+<button class="colorBtn active" data-color="green" title="Neón verde">🟢</button>
+<button class="colorBtn" data-color="cyan" title="Cyan">🔵</button>
+<button class="colorBtn" data-color="purple" title="Púrpura">🟣</button>
+<button class="colorBtn" data-color="red" title="Rojo">🔴</button>
+<button class="colorBtn" data-color="gold" title="Dorado">🟡</button>
+<button class="colorBtn" data-color="rainbow" title="Multicolor">🌈</button>
+</div>
+
+<div class="modes">
+<button onclick="rainbow()">🌈 MULTICOLOR</button>
+<button onclick="matrix()">☣️ MATRIX</button>
+<button onclick="neonPulse()">💥 NEON PULSE</button>
+</div><div class="section-title">ULTRA CONTROL CENTER</div>
+<div class="tools">
+<button onclick="particleBurst()">💥 BURST</button>
+<button onclick="scanFlash()">📡 SCAN FLASH</button>
+<button onclick="holo()">🔮 HOLOGRAM</button>
+<button onclick="starsMode()">🌟 STARFIELD</button>
+<button onclick="glassMode()">💎 GLASS</button>
+<button onclick="cinema()">🎬 CINEMA</button>
+</div>
+<div class="mini-stats">
+  <div><b id="fps">60</b><span>FPS</span></div>
+  <div><b id="energy">100%</b><span>ENERGY</span></div>
+  <div><b id="mode">GOD</b><span>MODE</span></div>
+  <div><b id="clock">00:00</b><span>TIME</span></div>
+</div>
+
+<div class="actions">
+<button class="god" onclick="god()">👑 ACTIVAR CHAMO GOD MODE</button>
+<button onclick="randomize()">⚡ EFECTO RANDOM</button>
+<button onclick="resetAll()">↺ RESET</button>
+</div>
+<div class="quote">“<b>MI ESTILO NO SE COPIA.</b> MI NIVEL HABLA SOLO.”</div>
+</main></section></div>
+<div class="toast" id="toast">⚡ ACTIVADO</div>
+
+<script>
+const c=document.getElementById("bg"),x=c.getContext("2d"),fx=document.getElementById("fx"),panel=document.querySelector(".panel"),toastEl=document.getElementById("toast");
+let W,H,stars=[],comets=[],features={particles:true,scan:true,aura:true,glow:true,dark:false,comets:true};
+function resize(){W=innerWidth;H=innerHeight;c.width=W*devicePixelRatio;c.height=H*devicePixelRatio;c.style.width=W+"px";c.style.height=H+"px";x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}resize();addEventListener("resize",resize);
+for(let i=0;i<115;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:.4+Math.random()*1.8,v:.2+Math.random(),a:Math.random()*6.28});
+function loop(){x.clearRect(0,0,W,H);if(features.particles)for(const s of stars){s.y-=s.v;if(s.y<0){s.y=H;s.x=Math.random()*W}s.a+=.02;x.beginPath();x.fillStyle=`rgba(0,255,179,${.2+.2*Math.sin(s.a)})`;x.arc(s.x,s.y,s.r,0,7);x.fill()}if(features.comets&&Math.random()<.025)comets.push({x:W+20,y:Math.random()*H*.7,l:Math.random()*70+30,v:5+Math.random()*5});for(let i=comets.length-1;i>=0;i--){let q=comets[i];q.x-=q.v;q.y+=q.v*.35;x.strokeStyle="#7fffe2aa";x.lineWidth=1.5;x.beginPath();x.moveTo(q.x,q.y);x.lineTo(q.x+q.l,q.y-q.l*.35);x.stroke();if(q.x<-100)comets.splice(i,1)}requestAnimationFrame(loop)}loop();
+function pop(t){toastEl.textContent=t;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),1700)}
+document.querySelectorAll(".toggle").forEach(t=>t.onclick=()=>{let f=t.dataset.f;features[f]=!features[f];t.classList.toggle("on",features[f]);if(f==="scan")document.querySelector(".panel").style.background=features[f]?"#02070bdc":"#02070bf2";if(f==="aura")fx.style.display=features[f]?"block":"none";if(f==="glow")panel.style.boxShadow=features[f]?"0 0 50px var(--accent)1c,0 0 130px #0077ff0d":"none";if(f==="dark")document.body.style.filter=features[f]?"brightness(.7)":"none";pop((features[f]?"✓ ":"✕ ")+f.toUpperCase()+" "+(features[f]?"ON":"OFF"))});
+function god(){panel.style.borderColor="var(--accent)99";panel.style.boxShadow="0 0 70px var(--accent)44,0 0 170px #0077ff22,inset 0 0 60px var(--accent)14";pop("👑 CHAMO GOD MODE ACTIVADO")}
+function randomize(){let hues=[0,35,90,170,215];let h=hues[Math.floor(Math.random()*hues.length)];document.body.style.filter=`hue-rotate(${h}deg)`;pop("⚡ AURA RANDOM ACTIVADA")}
+let rainbowTimer=null, matrixTimer=null;
+const palettes={
+green:["var(--accent)","var(--accent2)"],
+cyan:["#00d9ff","#9ff6ff"],
+purple:["#a56cff","#e2c7ff"],
+red:["#ff3158","#ff9aaa"],
+gold:["#ffd447","#fff0a6"]
+};
+function applyColor(name){
+  clearInterval(rainbowTimer); rainbowTimer=null;
+  if(name==="rainbow"){rainbow();return}
+  const p=palettes[name]||palettes.green;
+  document.documentElement.style.setProperty("--accent",p[0]);
+  document.documentElement.style.setProperty("--accent2",p[1]);
+  document.body.style.filter="none";
+  panel.style.borderColor=p[0]+"88";
+  panel.style.boxShadow=`0 0 60px ${p[0]}35,0 0 140px ${p[0]}18,inset 0 0 50px ${p[0]}10`;
+  document.querySelectorAll(".colorBtn").forEach(b=>b.classList.toggle("active",b.dataset.color===name));
+  pop("🎨 COLOR "+name.toUpperCase()+" ACTIVADO");
+}
+document.querySelectorAll(".colorBtn").forEach(b=>b.onclick=()=>applyColor(b.dataset.color));
+
+function rainbow(){
+ clearInterval(rainbowTimer);
+ let hue=0;
+ rainbowTimer=setInterval(()=>{
+   hue=(hue+3)%360;
+   document.body.style.filter=`hue-rotate(${hue}deg)`;
+   panel.style.borderColor=`hsl(${hue} 100% 65% / .65)`;
+   panel.style.boxShadow=`0 0 65px hsl(${hue} 100% 60% / .25),0 0 150px hsl(${(hue+90)%360} 100% 60% / .14)`;
+ },45);
+ document.querySelectorAll(".colorBtn").forEach(b=>b.classList.toggle("active",b.dataset.color==="rainbow"));
+ pop("🌈 MODO MULTICOLOR ACTIVADO");
+}
+function matrix(){
+ clearInterval(matrixTimer);
+ matrixTimer=setInterval(()=>{
+   const h=105+Math.floor(Math.random()*35);
+   panel.style.borderColor=`hsl(${h} 100% 55% / .7)`;
+ },120);
+ pop("☣️ MATRIX MODE ACTIVADO");
+}
+function neonPulse(){
+ let on=false,count=0;
+ const t=setInterval(()=>{
+   on=!on; count++;
+   panel.style.boxShadow=on?"0 0 80px var(--accent)55,0 0 180px #00d9ff22":"0 0 18px var(--accent)0c";
+   if(count>10)clearInterval(t);
+ },180);
+ pop("💥 NEON PULSE ACTIVADO");
+}
+function particleBurst(){
+  for(let i=0;i<55;i++){
+    const p=document.createElement("div"); p.className="burst";
+    p.style.left="50%"; p.style.top="50%"; document.body.appendChild(p);
+    const a=Math.random()*Math.PI*2, d=60+Math.random()*260;
+    p.animate([{transform:"translate(-50%,-50%) scale(1)",opacity:1},
+               {transform:`translate(calc(-50% + ${Math.cos(a)*d}px),calc(-50% + ${Math.sin(a)*d}px)) scale(0)`,opacity:0}],
+              {duration:700+Math.random()*500,easing:"cubic-bezier(.2,.8,.2,1)"});
+    setTimeout(()=>p.remove(),1300);
+  }
+  pop("💥 PARTICLE BURST ACTIVADO");
+}
+function scanFlash(){
+  const old=scan.style.display; scan.style.display="block";
+  scan.animate([{opacity:.1},{opacity:1},{opacity:.1}],{duration:650});
+  setTimeout(()=>{if(features.scan===false)scan.style.display="none";else scan.style.display=old||"block"},700);
+  pop("📡 SCAN FLASH");
+}
+function holo(){
+  panel.animate([{transform:"perspective(900px) rotateX(0) rotateY(0)"},
+                 {transform:"perspective(900px) rotateX(2deg) rotateY(-2deg)"},
+                 {transform:"perspective(900px) rotateX(-2deg) rotateY(2deg)"},
+                 {transform:"perspective(900px) rotateX(0) rotateY(0)"}],
+                {duration:900,easing:"ease-in-out"});
+  pop("🔮 HOLOGRAM MODE");
+}
+function starsMode(){
+  features.particles=true; features.comets=true;
+  document.querySelectorAll(".toggle").forEach(t=>{
+    if(t.dataset.f==="particles"||t.dataset.f==="comets") t.classList.add("on");
+  });
+  pop("🌟 STARFIELD MAX");
+}
+function glassMode(){
+  panel.style.background="rgba(255,255,255,.045)";
+  panel.style.backdropFilter="blur(30px) saturate(1.6)";
+  panel.style.borderColor="rgba(255,255,255,.28)";
+  pop("💎 GLASS MODE");
+}
+function cinema(){
+  document.body.animate([{filter:"brightness(1)"},{filter:"brightness(.48)"},{filter:"brightness(.72)"}],
+                        {duration:500,fill:"forwards"});
+  pop("🎬 CINEMA MODE");
+}
+setInterval(()=>{
+  document.getElementById("clock").textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  document.getElementById("energy").textContent=Math.floor(88+Math.random()*13)+"%";
+},1000);
+function resetAll(){clearInterval(rainbowTimer);clearInterval(matrixTimer);rainbowTimer=null;matrixTimer=null;document.body.style.filter="none";panel.style.transform="none";panel.style.background="#02070bdc";panel.style.backdropFilter="blur(20px)";features={particles:true,scan:true,aura:true,glow:true,dark:false,comets:true};document.querySelectorAll(".toggle").forEach(t=>t.classList.toggle("on",features[t.dataset.f]));fx.style.display="block";document.body.style.filter="none";panel.style.borderColor="var(--accent)4d";panel.style.boxShadow="0 0 50px var(--accent)1c,0 0 130px #0077ff0d";pop("↺ PANEL RESTABLECIDO")}
+</script>
+</body>
+</html>
